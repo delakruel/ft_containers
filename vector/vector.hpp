@@ -47,7 +47,11 @@ public:
 	// vector( const vector& other );//6
 
 	~vector() {
-
+		if (sz > 0)
+			for (int i = 0; i < sz; ++i)
+				alloc.destroy(arr + i);
+		if (cap > 0)
+			alloc.deallocate(arr, cap);
 	};
 
 	vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
