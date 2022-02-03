@@ -48,20 +48,20 @@ public:
 
 	~vector() {
 		if (sz > 0)
-			for (int i = 0; i < sz; ++i)
+			for (size_type i = 0; i < sz; ++i)
 				alloc.destroy(arr + i);
 		if (cap > 0)
 			alloc.deallocate(arr, cap);
 	};
 
-	vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
+	// vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
 
-	template <class InputIterator>
-		void assign(InputIterator first, InputIterator last);
+	// template <class InputIterator>
+	// 	void assign(InputIterator first, InputIterator last);
 
-	void assign(size_type n, const T& u);
+	// void assign(size_type n, const T& u);
 
-	allocator_type get_allocator() const;
+	// allocator_type get_allocator() const;
 
 	// /*		Iterators		*/
 	// iterator begin();
@@ -74,21 +74,55 @@ public:
 	// const_reverse_iterator rend() const;
 
 	/*		Capacity		*/
+
 	size_type size() const {
 		return (sz);
 	};
+
 	size_type max_size() const {
 		return (std::numeric_limits<difference_type>::max() / sizeof(value_type));
 	};
-	// void resize(size_type sz, T c = T()) {
 
-	// };
 	size_type capacity() const {
 		return (cap);
 	};
+
 	bool empty() const {
 		return (cap == 0);
 	};
+
+	void resize(size_type count, value_type value = value_type()) {
+		if (sz == count)
+			return ;
+		if (sz > count) {
+			for (size_type i = count; i < sz; ++i)
+				alloc.destroy(arr + i);
+			sz =- count;
+			return ;
+		}
+		if (cap >= count) {
+			for (size_type i = sz; i < count; ++i) {
+				alloc.construct(arr + i, value);
+			sz = count;
+			return ;
+		}
+		try {
+			value_type* newArr = alloc.allocate(count);
+			for (size_type i = 0; i < sz; ++i) {
+				alloc.construct(newArr + i, *(arr + i));
+				alloc.destroy(arr + i);
+			}
+			for (size_type i = sz; i < count; ++i)
+				alloc.construct(newArr + i, value);
+			if (cap)
+				alloc.deallocate(arr, cap);
+			arr = newArr;
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
+
+	};
+
 	void reserve(size_type new_cap) {
 		if (new_cap <= cap)
 			return ;
@@ -100,7 +134,8 @@ public:
 				alloc.construct(newArr + i, *(arr + i));
 				alloc.destroy(arr + i);
 			}
-			alloc.deallocate(arr, cap);
+			if (cap)
+				alloc.deallocate(arr, cap);
 			arr = newArr;
 			cap = new_cap;
 		} catch (std::bad_alloc &e) {
@@ -119,7 +154,7 @@ public:
 			throw std::out_of_range("ft::vector out_of_range_exception");
 		return *(arr + pos);
 	};
-	//sega - eto norm, like a std::vector
+
 	reference operator[](size_type pos) {
 		return *(arr + pos);
 	};
@@ -133,6 +168,7 @@ public:
 	const_reference front() const {
 		return *arr;
 	};
+
 	reference back() {
 		return *(arr + sz - 1);
 	};
@@ -142,17 +178,17 @@ public:
 
 	/*		Modifiers		*/
 	void push_back(const value_type& val) {
+		if (sz < cap) {
+			alloc.construct(arr + sz, val);
+			++sz;
+			return ;
+		}
 		try {
 			if (cap == 0) {
 				arr = alloc.allocate(1);
 				alloc.construct(arr, val);
 				++sz;
 				++cap;
-				return ;
-			}
-			if (sz < cap) {
-				alloc.construct(arr + sz, val);
-				++sz;
 				return ;
 			}
 			value_type* newArr = alloc.allocate(cap * 2);
@@ -173,8 +209,7 @@ public:
 	// iterator insert(iterator position, const T& x);
 	// void insert(iterator position, size_type n, const T& x);
 	// template <class InputIterator>
-	// void insert(iterator position,
-	// InputIterator first, InputIterator last);
+	// void insert(iterator position, InputIterator first, InputIterator last);
 	// iterator erase(iterator position);
 	// iterator erase(iterator first, iterator last);
 	// void swap(vector<T,Allocator>&);
