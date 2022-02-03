@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <exception>
+#include <limits>
 //#include "iterator.hpp"
 
 namespace ft
@@ -68,23 +69,50 @@ public:
 	// reverse_iterator rend();
 	// const_reverse_iterator rend() const;
 
-	// /*		Capacity		*/
-	// size_type size() const;
-	// size_type max_size() const;
-	// void resize(size_type sz, T c = T());
-	// size_type capacity() const;
-	// bool empty() const;
-	// void reserve(size_type n);
+	/*		Capacity		*/
+	size_type size() const {
+		return (sz);
+	};
+	size_type max_size() const {
+		return (std::numeric_limits<difference_type>::max() / sizeof(value_type));
+	};
+	// void resize(size_type sz, T c = T()) {
+
+	// };
+	size_type capacity() const {
+		return (cap);
+	};
+	bool empty() const {
+		return (cap == 0);
+	};
+	void reserve(size_type new_cap) {
+		if (new_cap <= cap)
+			return ;
+		if (new_cap > this->max_size())
+			throw std::length_error("ft::vector lenght_error_exception");
+		try {
+			value_type* newArr = alloc.allocate(new_cap);
+			for (size_type i = 0; i < sz; ++i) {
+				alloc.construct(newArr + i, *(arr + i));
+				alloc.destroy(arr + i);
+			}
+			alloc.deallocate(arr, cap);
+			arr = newArr;
+			cap = new_cap;
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
+	};
 
 	/*		Element access		*/
 	reference at(size_type pos) {
 		if (pos >= sz || pos < 0)
-			throw std::out_of_range("ft::vector");
+			throw std::out_of_range("ft::vector out_of_range_exception");
 		return *(arr + pos);
 	};
 	const_reference at(size_type pos) const {
 		if (pos >= sz || pos < 0)
-			throw std::out_of_range("ft::vector");
+			throw std::out_of_range("ft::vector out_of_range_exception");
 		return *(arr + pos);
 	};
 	//sega - eto norm, like a std::vector
@@ -110,27 +138,32 @@ public:
 
 	/*		Modifiers		*/
 	void push_back(const value_type& val) {
-		if (cap == 0) {
-			arr = alloc.allocate(1);
-			alloc.construct(arr, val);
+		try {
+			if (cap == 0) {
+				arr = alloc.allocate(1);
+				alloc.construct(arr, val);
+				++sz;
+				++cap;
+				return ;
+			}
+			if (sz < cap) {
+				alloc.construct(arr + sz, val);
+				++sz;
+				return ;
+			}
+			value_type* newArr = alloc.allocate(cap * 2);
+			for (size_type i = 0; i < sz; ++i) {
+				alloc.construct(newArr + i, *(arr + i));
+				alloc.destroy(arr + i);
+			}
+			alloc.construct(newArr + sz, val);
+			alloc.deallocate(arr, cap);
+			arr = newArr;
 			++sz;
-			++cap;
-			return ;
+			cap *= 2;
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
 		}
-		if (sz < cap) {
-			alloc.construct(arr + sz, val);
-			++sz;
-			return ;
-		}
-		value_type* newArr = alloc.allocate(cap * 2);
-		for (size_type i = 0; i < sz; ++i) {
-			alloc.construct(newArr + i, *(arr + i));
-			alloc.destroy(arr + i);
-		}
-		alloc.construct(newArr + sz, val);
-		alloc.deallocate(arr, cap);
-		++sz;
-		cap *= 2;
 	};
 	// void pop_back();
 	// iterator insert(iterator position, const T& x);
