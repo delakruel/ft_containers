@@ -9,5 +9,12 @@ int main() {
 	const std::vector<int> con(30, 777);
 
 	kek[4] = 20;
-	std::cout << kek.at(-20) << std::endl;
+	// try {
+	// 	std::cout << kek.at(-20) << std::endl;
+	// } catch (std::exception &e) {
+	// 	std::cout << e.what() << std::endl;
+	// }
+
+	std::vector<int>	test;
+	std::cout << kek.back() << std::endl;
 }

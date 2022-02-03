@@ -2,6 +2,7 @@
 # define FT_VECTOR_HPP
 
 #include <memory>
+#include <exception>
 //#include "iterator.hpp"
 
 namespace ft
@@ -33,9 +34,13 @@ public:
 	explicit vector(const Allocator& alloc = Allocator()) : sz(0), cap(0), alloc(alloc) {};
 
 	explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator()) : sz(count), cap(count), alloc(alloc) {
-		arr = this->alloc.allocate(count);
-		for (size_type i = 0; i < count; ++i)
-			this->alloc.construct((arr + i), value);
+		try {
+			arr = this->alloc.allocate(count);
+			for (size_type i = 0; i < count; ++i)
+				this->alloc.construct((arr + i), value);
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
 	};
 	// template< class InputIt > vector( InputIt first, InputIt last, const Allocator& alloc = Allocator());//5
 	// vector( const vector& other );//6
@@ -70,26 +75,36 @@ public:
 	// void reserve(size_type n);
 
 	/*		Element access		*/
+	reference at(size_type n) {
+		if (n >= sz || n < 0)
+			throw std::out_of_range("ft::vector");
+		return *(arr + n);
+	};
+	const_reference at(size_type n) const {
+		if (n >= sz || n < 0)
+			throw std::out_of_range("ft::vector");
+		return *(arr + n);
+	};
+	//sega - eto norm, like a std::vector
 	reference operator[](size_type n) {
 		return *(arr + n);
 	};
 	const_reference operator[](size_type n) const {
 		return *(arr + n);
 	};
-	reference at(size_type n) {
-		if (n >= sz || n < 0)
-			throw std::out_of_range();
-		return *(arr + n);
+
+	reference front() {
+		return *arr;
 	};
-	const_reference at(size_type n) const {
-		if (n >= sz || n < 0)
-			throw std::out_of_range();
-		return *(arr + n);
+	const_reference front() const {
+		return *arr;
 	};
-	// reference front();
-	// const_reference front() const;
-	// reference back();
-	// const_reference back() const;
+	reference back() {
+		return *(arr + sz - 1);
+	};
+	const_reference back() const {
+		return *(arr + sz - 1);
+	};
 
 	// /*		Modifiers		*/
 	// void push_back(const T& x);
