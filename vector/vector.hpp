@@ -101,7 +101,7 @@ public:
 			return ;
 		}
 		if (cap >= count) {
-			for (size_type i = sz; i < count; ++i) {
+			for (size_type i = sz; i < count; ++i)
 				alloc.construct(arr + i, value);
 			sz = count;
 			return ;
@@ -120,7 +120,6 @@ public:
 		} catch (std::bad_alloc &e) {
 			std::cerr << e.what() << std::endl;
 		}
-
 	};
 
 	void reserve(size_type new_cap) {
@@ -205,7 +204,11 @@ public:
 			std::cerr << e.what() << std::endl;
 		}
 	};
-	// void pop_back();
+
+	void pop_back() {
+		alloc.destroy(--sz + arr);
+	};
+
 	// iterator insert(iterator position, const T& x);
 	// void insert(iterator position, size_type n, const T& x);
 	// template <class InputIterator>
@@ -217,23 +220,23 @@ public:
 };
 
 		/*		Operators		*/
-template <class T, class Allocator>
-	bool operator==(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
-template <class T, class Allocator>
-	bool operator< (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
-template <class T, class Allocator>
-	bool operator!=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
-template <class T, class Allocator>
-	bool operator> (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
-template <class T, class Allocator>
-	bool operator>=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
-template <class T, class Allocator>
-	bool operator<=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator==(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator< (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator!=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator> (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator>=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	bool operator<=(const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
 
 
 		/*		Specialized algorighms		*/
-template <class T, class Allocator>
-	void swap(vector<T,Allocator>& lhs, vector<T,Allocator>& rhs);
+// template <class T, class Allocator>
+// 	void swap(vector<T,Allocator>& lhs, vector<T,Allocator>& rhs);
 
 }
 
