@@ -10,11 +10,6 @@ int main() {
 	const ft::vector<int> con(30, 777);
 
 	kek[4] = 20;
-	// try {
-	// 	std::cout << kek.at(4) << std::endl;
-	// } catch (std::exception &e) {
-	// 	std::cout << e.what() << std::endl;
-	// }
 	ft::vector<int> pop(5, 2);
 	std::cout << pop.at(2) << std::endl;
 	ft::vector<int> str;
@@ -29,8 +24,23 @@ int main() {
 	for (int i = 0; i < 10; ++i)
 		str.push_back(-5 * i);
 	std::cout << str.size() << ' ' << str.capacity() << std::endl;
-	// for (int i = 0; i < 15; ++i)
-	// 	std::cout << str[i] << " ";
-	ft::vector<int> lal;
-	std::cout << lal.max_size() << " is maxsize" << std::endl;
+	
+	for (int i = 0; i < 15; ++i)
+		std::cout << str[i] << " ";
+	std::cout << std::endl;
+	ft::vector<int> lal(str);
+	str.push_back(11);
+
+	for (int i = 0; i < 15; ++i)
+		std::cout << str[i] << " ";
+	std::cout << std::endl;
+	for (int i = 0; i < 15; ++i)
+		std::cout << lal[i] << " ";
+	std::cout << std::endl;
+
+	ft::vector<int> lel;
+	lal = lel;
+	//for (int i = 0; i < 15; ++i)
+		std::cout << lal.size() << " " << lal.capacity();
+	std::cout << std::endl;
 }

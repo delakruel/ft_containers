@@ -43,25 +43,79 @@ public:
 			std::cerr << e.what() << std::endl;
 		}
 	};
+
 	// template< class InputIt > vector( InputIt first, InputIt last, const Allocator& alloc = Allocator());//5
-	// vector( const vector& other );//6
+
+	vector(const vector& copy) : alloc(copy.alloc), sz(copy.sz), cap(copy.cap) {
+		try {
+			arr = alloc.allocate(cap);
+			for (size_type i = 0; i < sz; ++i)
+				alloc.construct((arr + i), *(copy.arr + i));
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
+	};
 
 	~vector() {
-		if (sz > 0)
+		if (sz)
 			for (size_type i = 0; i < sz; ++i)
 				alloc.destroy(arr + i);
-		if (cap > 0)
+		if (cap)
 			alloc.deallocate(arr, cap);
 	};
 
-	// vector<T,Allocator>& operator=(const vector<T,Allocator>& x);
+	vector<T,Allocator>& operator=(const vector<T,Allocator>& other) { // to do - right try-catch alloc upper
+		if (this == &other)
+			return (*this);
+		try {
+			if (sz)
+				for (size_type i = 0; i < sz; ++i)
+					alloc.destroy(arr + i);
+			sz = other.sz;
+			if (cap < other.cap) {
+				if (cap)
+					alloc.deallocate(arr, cap);
+				cap = other.cap;
+				if (cap)
+					arr = alloc.allocate(cap);
+			}
+			for (size_type i = 0; i < sz; ++i)
+				alloc.construct(arr + i, *(other.arr + i));
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
+		return (*this);
+	};
 
 	// template <class InputIterator>
 	// 	void assign(InputIterator first, InputIterator last);
 
-	// void assign(size_type n, const T& u);
+	void assign(size_type count, const value_type& value) {//esli cap > count, cap dont change
+		if (sz)
+			for (size_type i = 0; i < sz; ++i)
+				alloc.destroy(arr + i);
+		sz = count;
+		if (cap >= count) {
+			for (size_type i = 0; i < sz; ++i)
+				alloc.construct(arr + i, value);
+			return ;
+		}
+		try {
+			if (cap)
+				alloc.deallocate(arr, cap);
+			cap = count;
+			if (cap)
+				arr = alloc.allocate(cap);
+			for (size_type i = 0; i < sz; ++i)
+				alloc.construct(arr + i, value);
+		} catch (std::bad_alloc &e) {
+			std::cout << e.what() << std::endl;
+		}
+	};
 
-	// allocator_type get_allocator() const;
+	allocator_type get_allocator() const {
+		return (alloc);
+	};
 
 	// /*		Iterators		*/
 	// iterator begin();
@@ -215,8 +269,15 @@ public:
 	// void insert(iterator position, InputIterator first, InputIterator last);
 	// iterator erase(iterator position);
 	// iterator erase(iterator first, iterator last);
-	// void swap(vector<T,Allocator>&);
-	// void clear();
+	// void swap(vector<T,Allocator>&) {
+
+	// };
+
+	void clear() {
+		for (size_type i = 0; i < sz; ++i)
+			alloc.destroy(arr + i);
+		sz = 0;
+	};
 };
 
 		/*		Operators		*/
