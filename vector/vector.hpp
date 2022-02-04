@@ -269,9 +269,20 @@ public:
 	// void insert(iterator position, InputIterator first, InputIterator last);
 	// iterator erase(iterator position);
 	// iterator erase(iterator first, iterator last);
-	// void swap(vector<T,Allocator>&) {
-
-	// };
+	void swap(vector<value_type, allocator_type>& other) {
+		value_type	*tmp_p;
+		size_type	tmp_cap;
+		size_type	tmp_sz;
+		tmp = arr;
+		tmp_cap = cap;
+		tmp_sz = sz;
+		arr = other.arr;
+		cap = other.cap;
+		sz = other.sz;
+		other.arr = tmp;
+		other.cap = tmp_cap;
+		other.sz = tmp_sz;
+	};
 
 	void clear() {
 		for (size_type i = 0; i < sz; ++i)
