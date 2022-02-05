@@ -21,10 +21,10 @@ public:
 	typedef	const value_type&					const_reference;
 	typedef	typename Allocator::pointer			pointer;
 	typedef	typename Allocator::const_pointer	const_pointer;
-	//iterator
-	//const_iterator
-	//reverse_iterator
-	//const_reverse_iterator
+	// typedef	vecIter<std::random_access_iterator_tag, T>			iterator;
+	// typedef	vecIter<std::random_access_iterator_tag, const T>	const_iterator;
+	// typedef	rVecIter<std::random_access_iterator_tag, T>		reverse_iterator;
+	// typedef	rVecIter<std::random_access_iterator_tag, const T>	const_reverse_iterator;
 private:
 	T*				arr;
 	size_type		sz;
@@ -269,6 +269,7 @@ public:
 	// void insert(iterator position, InputIterator first, InputIterator last);
 	// iterator erase(iterator position);
 	// iterator erase(iterator first, iterator last);
+	
 	void swap(vector<value_type, allocator_type>& other) {
 		value_type	*tmp_p;
 		size_type	tmp_cap;
@@ -307,8 +308,10 @@ public:
 
 
 		/*		Specialized algorighms		*/
-// template <class T, class Allocator>
-// 	void swap(vector<T,Allocator>& lhs, vector<T,Allocator>& rhs);
+template <class T, class Allocator>
+	void swap(vector<T,Allocator>& lhs, vector<T,Allocator>& rhs) {
+		lhs.swap(rhs);
+	};
 
 }
 

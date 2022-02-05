@@ -15,7 +15,11 @@ template<
     class Reference = T&>
 struct iterator
 {
-    //typedef Category    std::random_access_iterator_tag;
+    typedef T           value_type;
+    typedef Distance    difference_type;
+    typedef Pointer     pointer;
+    typedef Reference   reference;
+    typedef Category    iterator_category;
 
 };
 
