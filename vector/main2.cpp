@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 
 int main() {
 	std::vector<int> kek;
@@ -29,4 +30,6 @@ int main() {
 	for (size_t i = 0; i < kek2.size(); ++i)
 		std::cout << kek2[i] << ' ';
 	std::cout << std::endl;
+	std::vector<int>::iterator sdopfspod = kek.begin();
+	std::map<int, std::string>::iterator pop;
 }
