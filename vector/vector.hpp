@@ -4,7 +4,7 @@
 #include <memory>
 #include <exception>
 #include <limits>
-//#include "iterator.hpp"
+#include "iterator.hpp"
 
 namespace ft
 {
@@ -21,7 +21,7 @@ public:
 	typedef	const value_type&					const_reference;
 	typedef	typename Allocator::pointer			pointer;
 	typedef	typename Allocator::const_pointer	const_pointer;
-	// typedef	vecIter<std::random_access_iterator_tag, T>			iterator;
+	typedef	vecIter<std::random_access_iterator_tag, T>			iterator;
 	// typedef	vecIter<std::random_access_iterator_tag, const T>	const_iterator;
 	// typedef	rVecIter<std::random_access_iterator_tag, T>		reverse_iterator;
 	// typedef	rVecIter<std::random_access_iterator_tag, const T>	const_reverse_iterator;
@@ -274,13 +274,13 @@ public:
 		value_type	*tmp_p;
 		size_type	tmp_cap;
 		size_type	tmp_sz;
-		tmp = arr;
+		tmp_p = arr;
 		tmp_cap = cap;
 		tmp_sz = sz;
 		arr = other.arr;
 		cap = other.cap;
 		sz = other.sz;
-		other.arr = tmp;
+		other.arr = tmp_p;
 		other.cap = tmp_cap;
 		other.sz = tmp_sz;
 	};

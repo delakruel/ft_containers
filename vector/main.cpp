@@ -1,6 +1,8 @@
 #include <iostream>
 #include "vector.hpp"
+#include "iterator.hpp"
 #include <string>
+#include <cstdio>
 
 int main() {
 	std::cout << "privet" << std::endl;
@@ -43,4 +45,10 @@ int main() {
 	//for (int i = 0; i < 15; ++i)
 		std::cout << lal.size() << " " << lal.capacity();
 	std::cout << std::endl;
+
+	int a = 5;
+	int	*tes = &a;
+	ft::vector<int>::iterator keke(tes);
+	//ft::vector<int>::iterator popka(keke);
+	printf("%p\n%p\n", tes, &(*keke));
 }
