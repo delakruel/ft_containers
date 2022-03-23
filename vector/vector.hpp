@@ -284,9 +284,13 @@ public:
 
 	iterator insert(iterator position, const T& value) {
 		if (sz < cap) {
+			value_type tmp;
 			alloc.construct(arr + sz, value);
-			for (iterator it = position; it < end(); ++it)
-				*it = *(end());
+			for (iterator it = position; it < (arr + sz); ++it) {
+				tmp = *it;
+				*it = *(arr + sz);
+				*(arr + sz) = tmp;
+			}
 			++sz;
 			return position;
 		}
@@ -321,11 +325,54 @@ public:
 			std::cerr << e.what() << std::endl;
 		}
 	};
-	void insert(iterator position, size_type n, const T& x) {
-		
+	void insert(iterator position, size_type n, const T& value) {//
+		if (n < 0)
+			throw std::length_error("ft::vector std::length_error");
+		if (sz + n <= cap) {
+			value_type	tmp;
+			for (iterator it = end(), it2 = position; it != end() + n; ++it, ++it2) {
+				alloc.construct(it, value);
+				tmp = *it2;
+				*it2 = *it;
+				*it = tmp;
+			}
+			return ;
+		}
+		try {
+			if (cap == 0) {
+				arr = alloc.allocate(n);
+				for (size_type i = 0; i < n; ++i)
+					alloc.construct(arr + i, value);
+				sz += n;
+				cap += n;
+				return ;
+			}
+			size_type	place = position - arr;
+			value_type* newArr = alloc.allocate(cap + n);
+			for (size_type i = 0; i < sz + n; ++i) {
+				if (i < place) {
+					alloc.construct(newArr + i, *(arr + i));
+					alloc.destroy(arr + i);
+				}
+				if (i >= place && i < place + n)
+					alloc.construct(newArr + i, value);
+				if (i >= place + n) {
+					alloc.construct(newArr + i, *(arr + i - n))
+					alloc.destroy(arr + i - n);
+				}
+			}
+			alloc.deallocate(arr, cap);
+			arr = newArr;
+			sz += n;
+			cap += n;
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
 	};
-	// template <class InputIterator>
-	// void insert(iterator position, InputIterator first, InputIterator last);
+	template <class InputIterator>//.////////////////
+	void insert(iterator position, InputIterator first, InputIterator last) {
+
+	};
 
 	iterator erase(iterator position) {
 		alloc.destroy(position);
