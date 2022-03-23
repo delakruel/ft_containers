@@ -32,7 +32,8 @@ private:
 	Allocator		alloc;
 public:
 	/*		Constructors, copy, destroy		*/
-	explicit vector(const Allocator& alloc = Allocator()) : sz(0), cap(0), alloc(alloc) {};
+	explicit vector(const Allocator& alloc = Allocator()) : sz(0), cap(0), alloc(alloc), arr(NULL) {
+	};
 
 	explicit vector(size_type count, const T& value = T(), const Allocator& alloc = Allocator()) : sz(count), cap(count), alloc(alloc) {
 		try {
@@ -100,7 +101,7 @@ public:
 		//////////////////////////////////
 	};
 
-	void assign(size_type count, const value_type& value) {//esli cap > count, cap dont change
+	void assign(size_type count, const value_type& value) {
 		if (sz)
 			for (size_type i = 0; i < sz; ++i)
 				alloc.destroy(arr + i);
@@ -281,10 +282,51 @@ public:
 		alloc.destroy(--sz + arr);
 	};
 
-	// iterator insert(iterator position, const T& x);
-	// void insert(iterator position, size_type n, const T& x);
+	iterator insert(iterator position, const T& value) {
+		if (sz < cap) {
+			alloc.construct(arr + sz, value);
+			for (iterator it = position; it < end(); ++it)
+				*it = *(end());
+			++sz;
+			return position;
+		}
+		try {
+			if (cap == 0) {
+				arr = alloc.allocate(1);
+				alloc.construct(arr, value);
+				++sz;
+				++cap;
+				return arr;
+			}
+			size_type	n = position - arr;
+			value_type* newArr = alloc.allocate(cap * 2);
+			for (size_type i = 0; i <= sz; ++i) {
+				if (i < n) {
+					alloc.construct(newArr + i, *(arr + i));
+					alloc.destroy(arr + i);
+				}
+				if (i == n)
+					alloc.construct(newArr + i, value);
+				if (i > n) {
+					alloc.construct(newArr + i, *(arr + i - 1))
+					alloc.destroy(arr + i - 1);
+				}
+			}
+			alloc.deallocate(arr, cap);
+			arr = newArr;
+			++sz;
+			cap *= 2;
+			return (arr + n);
+		} catch (std::bad_alloc &e) {
+			std::cerr << e.what() << std::endl;
+		}
+	};
+	void insert(iterator position, size_type n, const T& x) {
+		
+	};
 	// template <class InputIterator>
 	// void insert(iterator position, InputIterator first, InputIterator last);
+
 	iterator erase(iterator position) {
 		alloc.destroy(position);
 		if (position - arr < sz) {

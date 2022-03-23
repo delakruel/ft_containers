@@ -46,14 +46,18 @@ int main() {
 	// 	std::cout << lal.size() << " " << lal.capacity();
 	// std::cout << std::endl;
 	ft::vector<int> kek;
-	for (int i = 0; i < 10; ++i)
-		kek.push_back(i);
-	ft::vector<int>::iterator first = kek.begin();
-	ft::vector<int>::iterator last = kek.end();
+	ft::vector<int>::iterator iter = kek.begin();
+	printf("%p\n", iter);
+	// for (int i = 0; i < 10; ++i)
+	// 	kek.push_back(i);
+	// ft::vector<int>::iterator first = kek.begin();
+	// ft::vector<int>::iterator last = kek.end();
 
-	ft::vector<int> lol(first, first + 2);
-	for (int i = 0; i < lol.size(); ++i)
-		std::cout << lol[i] << ' ';
-	std::cout << last - first << std::endl;
-	
+	// ft::vector<int> lol(first, first + 2);
+	// for (int i = 0; i < lol.size(); ++i)
+	// 	std::cout << lol[i] << ' ';
+	// std::cout << last - first << std::endl;
+	int *a;
+	a = NULL;
+	printf("%p\n", a);
 }
