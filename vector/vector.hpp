@@ -22,7 +22,7 @@ public:
 	typedef	typename Allocator::pointer			pointer;
 	typedef	typename Allocator::const_pointer	const_pointer;
 	typedef	vecIter<std::random_access_iterator_tag, T>			iterator;
-	// typedef	vecIter<std::random_access_iterator_tag, const T>	const_iterator;
+	typedef	vecIter<std::random_access_iterator_tag, const T>	const_iterator;
 	// typedef	rVecIter<std::random_access_iterator_tag, T>		reverse_iterator;
 	// typedef	rVecIter<std::random_access_iterator_tag, const T>	const_reverse_iterator;
 private:
@@ -44,7 +44,15 @@ public:
 		}
 	};
 
-	// template< class InputIt > vector( InputIt first, InputIt last, const Allocator& alloc = Allocator());//5
+	template< class InputIt > 
+	vector(InputIt first, InputIt last, const Allocator& alloc = Allocator()) {
+		difference_type n = last - first;
+		arr = this->alloc.allocate(n);
+		sz = n;
+		cap = n;
+		for (size_type i = 0; i < n; ++i)
+			this->alloc.construct((arr + i), *(first + i));
+	};
 
 	vector(const vector& copy) : alloc(copy.alloc), sz(copy.sz), cap(copy.cap) {
 		try {
@@ -64,7 +72,7 @@ public:
 			alloc.deallocate(arr, cap);
 	};
 
-	vector<T,Allocator>& operator=(const vector<T,Allocator>& other) { // to do - right try-catch alloc upper
+	vector<T,Allocator>& operator=(const vector<T,Allocator>& other) {
 		if (this == &other)
 			return (*this);
 		try {
@@ -87,8 +95,10 @@ public:
 		return (*this);
 	};
 
-	// template <class InputIterator>
-	// 	void assign(InputIterator first, InputIterator last);
+	template <class InputIterator>
+	void assign(InputIterator first, InputIterator last) {
+		//////////////////////////////////
+	};
 
 	void assign(size_type count, const value_type& value) {//esli cap > count, cap dont change
 		if (sz)
@@ -118,10 +128,18 @@ public:
 	};
 
 	// /*		Iterators		*/
-	// iterator begin();
-	// const_iterator begin() const;
-	// iterator end();
-	// const_iterator end() const;
+	iterator begin() {
+		return iterator(arr);
+	};
+	const_iterator begin() const {
+		return const_iterator(arr);
+	};
+	iterator end() {
+		return iterator (arr + sz);
+	};
+	const_iterator end() const {
+		return const_iterator (arr + sz);
+	};
 	// reverse_iterator rbegin();
 	// const_reverse_iterator rbegin() const;
 	// reverse_iterator rend();
@@ -267,8 +285,21 @@ public:
 	// void insert(iterator position, size_type n, const T& x);
 	// template <class InputIterator>
 	// void insert(iterator position, InputIterator first, InputIterator last);
-	// iterator erase(iterator position);
-	// iterator erase(iterator first, iterator last);
+	iterator erase(iterator position) {
+		alloc.destroy(position);
+		if (position - arr < sz) {
+			alloc.construct(position, *(position + 1));
+			for (iterator it = position + 1; it != (end() - 1); ++it)
+				*it = *(it + 1);
+		}
+		--sz;
+		return position;
+	};
+	iterator erase(iterator first, iterator last) {
+		for (iterator it = first, it != last, ++it) 
+			alloc.destroy(it);
+		
+	};
 	
 	void swap(vector<value_type, allocator_type>& other) {
 		value_type	*tmp_p;
