@@ -296,9 +296,14 @@ public:
 		return position;
 	};
 	iterator erase(iterator first, iterator last) {
-		for (iterator it = first, it != last, ++it) 
+		for (iterator it = first; it != last; ++it) 
 			alloc.destroy(it);
-		
+		for (iterator it = first, it2 = last; it != last, it2 != end(); ++it, ++it2)
+			alloc.construct(it, *it2);
+		for (iterator it = last; (it + (last - first)) < end(); ++it)
+			*it = *(it + (last - first));
+		sz-= (last - first);
+		return (first);
 	};
 	
 	void swap(vector<value_type, allocator_type>& other) {
